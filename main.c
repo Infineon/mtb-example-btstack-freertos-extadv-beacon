@@ -12,10 +12,12 @@
 * Related Document: See README.md
 *
 */
-#include "cybt_platform_trace.h"
-#include "wiced_bt_trace.h"
+#include "stdio.h"
+#include <FreeRTOS.h>
 #include "cybsp.h"
 #include "cybt_platform_config.h"
+#include "cybt_platform_trace.h"
+#include "wiced_bt_trace.h"
 #include "beacon.h"
 #ifdef ENABLE_BT_SPY_LOG
 #include "cybt_debug_uart.h"

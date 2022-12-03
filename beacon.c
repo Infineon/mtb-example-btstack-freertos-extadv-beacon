@@ -100,7 +100,7 @@ typedef struct
  *                              Variables Definitions
  ******************************************************************************/
 static uint8_t                                  supported_adv;
-static wiced_bt_device_address_t                peer_addr = {};
+static wiced_bt_device_address_t                peer_addr = {0,0,0,0,0,0};
 static uint16_t                                 beacon_conn_id = 0;
 static wiced_bt_db_hash_t                       beacon_db_hash;
 static wiced_bt_ble_ext_adv_duration_config_t   duration_cfg[BEACON_CNT] = {{1},{2},{3},{4},{5}};
@@ -136,7 +136,7 @@ static uint8_t beacon_set_eddystone_url_advertisement_data(beacon_adv_data_t adv
     /* Set sample values for Eddystone URL*/
     uint8_t len;
     uint8_t beacon_tx_power = 0x01;
-    eddystone_encoded_url_t encoded_url = "cypress.com";
+    eddystone_encoded_url_t encoded_url = "infineon.com";
 
     /* Call Eddystone URL api to prepare adv data*/
     wiced_bt_eddystone_set_data_for_url(beacon_tx_power, EDDYSTONE_URL_SCHEME_0, encoded_url, adv_data, &len);

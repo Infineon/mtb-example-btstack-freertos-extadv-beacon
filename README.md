@@ -4,21 +4,24 @@ This code example demonstrates the implementation of Bluetooth&reg; LE extended 
 
 [View this README on GitHub.](https://github.com/Infineon/mtb-example-btstack-freertos-extadv-beacon)
 
-[Provide feedback on this code example.](https://git-ore.aus.cypress.com/wpp/ce/mtb/mtb-example-btstack-freertos-extadv-beacon/-/blob/develop/https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMzUwMzgiLCJTcGVjIE51bWJlciI6IjAwMi0zNTAzOCIsIkRvYyBUaXRsZSI6IkJUU1RBQ0s6IEJsdWV0b290aCZyZWc7IExFIEV4dGVuZGVkIEFkdmVydGlzZW1lbnQgQmVhY29uIiwicmlkIjoidHRvbSIsIkRvYyB2ZXJzaW9uIjoiMS4wLjAiLCJEb2MgTGFuZ3VhZ2UiOiJFbmdsaXNoIiwiRG9jIERpdmlzaW9uIjoiTUNEIiwiRG9jIEJVIjoiSUNXIiwiRG9jIEZhbWlseSI6IkJUQUJMRSJ9)
+[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMzUwMzgiLCJTcGVjIE51bWJlciI6IjAwMi0zNTAzOCIsIkRvYyBUaXRsZSI6IkJUU1RBQ0s6IEJsdWV0b290aCZyZWc7IExFIEV4dGVuZGVkIEFkdmVydGlzZW1lbnQgQmVhY29uIiwicmlkIjoidHRvbSIsIkRvYyB2ZXJzaW9uIjoiMi4wLjAiLCJEb2MgTGFuZ3VhZ2UiOiJFbmdsaXNoIiwiRG9jIERpdmlzaW9uIjoiTUNEIiwiRG9jIEJVIjoiSUNXIiwiRG9jIEZhbWlseSI6IkJUQUJMRSJ9)
 
 ## Requirements
 
-- [ModusToolbox software](https://www.infineon.com/cms/en/design-support/tools/sdk/modustoolbox-software) v2.4
+- [ModusToolbox&trade; software](https://www.infineon.com/modustoolbox) v3.0
 - Programming language: C
-- Associated parts: [AIROC CYW20829 Bluetooth LE SoC](https://www.infineon.com/cms/en/product/promopages/airoc20829/)
+- Associated parts: [AIROC&trade; CYW20829 Bluetooth&reg; LE SoC](https://www.infineon.com/cms/en/product/promopages/airoc20829/)
 
 ## Supported toolchains (make variable 'TOOLCHAIN')
 
 - GNU Arm&reg; Embedded Compiler  v10.3.1 (`GCC_ARM`) - Default value of `TOOLCHAIN`
+- Arm&reg; Compiler v6.16 (`ARM`)
+- IAR C/C++ Compiler v9.30.1 (`IAR`)
+
 
 ## Supported kits (make variable 'TARGET')
 
-- AIROC&trade; CYW920829M2EVB-01
+- AIROC&trade; [CYW920829M2EVB-01](https://www.infineon.com/cms/en/product/promopages/airoc20829/)
 
 ## Hardware setup
 
@@ -34,7 +37,7 @@ This example uses the kit's default configuration. See the respective kit guide 
 
    - On Android, download an app such as 'Beacon Scanner' by Nicholas Briduox.
 
-   - On iOS, download an app such as 'Locate Beacon'. In the 'Locate Beacon' phone app, enter the UUID for iBeacon. (see *UUID_IBEACON* in the *beacon.c* application file for the UUID definition).
+   - On iOS, download an app such as 'Locate Beacon'. In the 'Locate Beacon' phone app, enter the UUID for iBeacon. (see `UUID_IBEACON` in the *beacon.c* application file for the UUID definition).
 
    **Figure 1. Beacon settings**
 
@@ -46,17 +49,18 @@ This example uses the kit's default configuration. See the respective kit guide 
 
    ![](./images/locate_scanner_setup.png)
 
+
 ## Using the code example
 
 Create the project and open it using one of the following:
 
 <details><summary><b>In Eclipse IDE for ModusToolbox&trade; software</b></summary>
 
-1. Click the **New Application** link in the **Quick Panel** (or, use **File** > **New** > **ModusToolbox Application**). This launches the [Project Creator](https://www.infineon.com/dgdl/Infineon-ModusToolbox_Project_Creator_Guide_3-UserManual-v01_00-EN.pdf?fileId=8ac78c8c7d718a49017d99bcabbd31e5) tool.
+1. Click the **New Application** link in the **Quick Panel** (or, use **File** > **New** > **ModusToolbox&trade; Application**). This launches the [Project Creator](https://www.infineon.com/ModusToolboxProjectCreator) tool.
 
 2. Pick a kit supported by the code example from the list shown in the **Project Creator - Choose Board Support Package (BSP)** dialog.
 
-   When you select a supported kit, the example is reconfigured automatically to work with the kit. To work with a different supported kit later, use the [Library Manager](https://www.infineon.com/dgdl/Infineon-ModusToolbox_Library_Manager_User_Guide_3-UserManual-v01_00-EN.pdf?fileId=8ac78c8c7d718a49017d99ab34b831ce) to choose the BSP for the supported kit. You can use the Library Manager to select or update the BSP and firmware libraries used in this application. To access the Library Manager, click the link from the **Quick Panel**.
+   When you select a supported kit, the example is reconfigured automatically to work with the kit. To work with a different supported kit later, use the [Library Manager](https://www.infineon.com/ModusToolboxLibraryManager) to choose the BSP for the supported kit. You can use the Library Manager to select or update the BSP and firmware libraries used in this application. To access the Library Manager, click the link from the **Quick Panel**.
 
    You can also just start the application creation process again and select a different kit.
 
@@ -70,7 +74,7 @@ Create the project and open it using one of the following:
 
 6. Click **Create** to complete the application creation process.
 
-For more details, see the [Eclipse IDE for ModusToolbox software user guide](https://www.infineon.com/dgdl/Infineon-Eclipse_IDE_for_ModusToolbox_User_Guide_1-UserManual-v01_00-EN.pdf?fileId=8ac78c8c7d718a49017d99bcb86331e8) (locally available at *{ModusToolbox&trade; software install directory}/ide_{version}/docs/mt_ide_user_guide.pdf*).
+For more details, see the [Eclipse IDE for ModusToolbox&trade; software user guide](https://www.infineon.com/MTBEclipseIDEUserGuide) (locally available at *{ModusToolbox&trade; software install directory}/docs_{version}/mt_ide_user_guide.pdf*).
 
 </details>
 
@@ -80,7 +84,7 @@ ModusToolbox&trade; software provides the Project Creator as both a GUI tool and
 
 Use a CLI terminal to invoke the "project-creator-cli" tool. On Windows, use the command line "modus-shell" program provided in the ModusToolbox&trade; software installation instead of a standard Windows command-line application. This shell provides access to all ModusToolbox&trade; software tools. You can access it by typing `modus-shell` in the search box in the Windows menu. In Linux and macOS, you can use any terminal application.
 
-This tool has the following arguments:
+The "project-creator-cli" tool has the following arguments:
 
 Argument | Description | Required/optional
 ---------|-------------|-----------
@@ -90,13 +94,13 @@ Argument | Description | Required/optional
 `--user-app-name`| Specify the name of the application if you prefer to have a name other than the example's default name | Optional
 
 
-The following example will clone the "[Bluetooth LE Beacon](https://github.com/Infineon/mtb-example-btstack-freertos-extadv-beacon)" application with the desired name "mtb-example-btstack-freertos-extadv-beacon" configured for the *CYW920829M2EVB-01* BSP into the specified working directory, *C:/mtb_projects*:
+The following example will clone the "[Bluetooth&trade; LE Beacon](https://github.com/Infineon/mtb-example-btstack-freertos-extadv-beacon)" application with the desired name "mtb-example-btstack-freertos-extadv-beacon" configured for the *CYW920829M2EVB-01* BSP into the specified working directory, *C:/mtb_projects*:
 
    ```
    project-creator-cli --board-id CYW920829M2EVB-01 --app-id mtb-example-btstack-freertos-extadv-beacon --user-app-name mtb-example-btstack-freertos-extadv-beacon --target-dir "C:/mtb_projects"
    ```
 
-**Note:** The project-creator-cli tool uses the `git clone` and `make getlibs` commands to fetch the repository and import the required libraries. For more details, see the "Project creator tools" section of the [ModusToolbox software user guide](https://www.infineon.com/dgdl/Infineon-ModusToolbox_2.4_User_Guide-Software-v01_00-EN.pdf?fileId=8ac78c8c7e7124d1017ed97e72563632) (locally available at *{ModusToolbox software install directory}/docs_{version}/mtb_user_guide.pdf*).
+**Note:** The project-creator-cli tool uses the `git clone` and `make getlibs` commands to fetch the repository and import the required libraries. For details, see the "Project creator tools" section of the [ModusToolbox&trade; software user guide](https://www.infineon.com/ModusToolboxUserGuide) (locally available at *{ModusToolbox&trade; software install directory}/docs_{version}/mtb_user_guide.pdf*).
 
 </details>
 
@@ -104,7 +108,7 @@ The following example will clone the "[Bluetooth LE Beacon](https://github.com/I
 
 Use one of the following options:
 
-- **Use the standalone [Project Creator](https://www.infineon.com/dgdl/Infineon-ModusToolbox_Project_Creator_Guide_3-UserManual-v01_00-EN.pdf?fileId=8ac78c8c7d718a49017d99bcabbd31e5) tool:**
+- **Use the standalone [Project Creator](https://www.infineon.com/ModusToolboxProjectCreator) tool:**
 
    1. Launch Project Creator from the Windows Start menu or from *{ModusToolbox&trade; software install directory}/tools_{version}/project-creator/project-creator.exe*.
 
@@ -122,7 +126,7 @@ Use one of the following options:
 
    3. Follow the instructions displayed in the terminal to create or import the application as an IDE project.
 
-For a list of supported IDEs and more details, see the "Exporting to IDEs" section of the [ModusToolbox software user guide](https://www.infineon.com/dgdl/Infineon-ModusToolbox_2.4_User_Guide-Software-v01_00-EN.pdf?fileId=8ac78c8c7e7124d1017ed97e72563632) (locally available at *{ModusToolbox&trade; software install directory}/docs_{version}/mtb_user_guide.pdf*).
+For a list of supported IDEs and more details, see the "Exporting to IDEs" section of the [ModusToolbox&trade; software user guide](https://www.infineon.com/ModusToolboxUserGuide) (locally available at *{ModusToolbox&trade; software install directory}/docs_{version}/mtb_user_guide.pdf*).
 
 </details>
 
@@ -133,7 +137,7 @@ For a list of supported IDEs and more details, see the "Exporting to IDEs" secti
 
    <details><summary><b>Using Eclipse IDE for ModusToolbox&trade; software</b></summary>
 
-      1. Select the application project in the Project Explorer.
+      1. Select the application project in Project Explorer.
 
       2. In the **Quick Panel**, scroll down, and click **\<Application Name> Program (KitProg3_MiniProg4)**.
 
@@ -141,18 +145,18 @@ For a list of supported IDEs and more details, see the "Exporting to IDEs" secti
 
    <details><summary><b>Using CLI</b></summary>
 
-     From the terminal, execute the `make program` command to build and program the application using the default toolchain to the default target. The default toolchain and target are specified in the application's Makefile but you can override those values manually:
+     From the terminal, execute the `make program` command to build and program the application using the default toolchain to the default target. The default toolchain is specified in the application's Makefile but you can override those values manually:
       ```
-      make program TARGET=<BSP> TOOLCHAIN=<toolchain>
+      make program TOOLCHAIN=<toolchain>
       ```
 
       Example:
       ```
-      make program TARGET=CYW920829M2EVB-01
+      make program TOOLCHAIN=IAR
       ```
    </details>
 
-3. After programming, the application starts automatically. Observe the beacon using the third-party applications such as "Beacon Scanner" application. The scanner automatically scans for nearby beacons, and will display the beacons configured in the application, showing Eddystone-URL, iBeacon, and Eddystone-UID as shown here:
+3. After programming, the application starts automatically. Observe the beacon using the third-party applications such as the "Beacon Scanner" application. The scanner automatically scans for nearby beacons, and will display the beacons configured in the application, showing Eddystone-URL, iBeacon, and Eddystone-UID as shown here:
 
    **Figure 3. Beacon scan**
 
@@ -169,29 +173,29 @@ For a list of supported IDEs and more details, see the "Exporting to IDEs" secti
 
    ![](./images/teraterm_log.png)
 
-## Steps to enable BTSpy Logs
+## Enable BTSpy logs
 
-- In the makefile, set ENABLE\_SPY\_TRACES=1
-- Build the application and program it to the board
-- Open [ClientControl](https://github.com/Infineon/btsdk-host-apps-bt-ble/tree/master/client_control)
-- Set the baud rate to 3000000
-- Deselect the flow control checkbox
-- Select the port and click on open port
-- Launch [BTSpy](https://github.com/Infineon/btsdk-utils/tree/master/BTSpy)
-- Press and release the reset button on the board to get the BTSpy logs
+1. In the Makefile, set `ENABLE_SPY_TRACES=1`.
+2. Build the application and program it to the board.
+3. Open [ClientControl](https://github.com/Infineon/btsdk-host-apps-bt-ble/tree/master/client_control) and do the following:
+   1. Set the baud rate to 3,000,000.
+   2. Deselect the **Flow control** checkbox.
+   3. Select the port and click **Open port**.
+4. Launch [BTSpy](https://github.com/Infineon/btsdk-utils/tree/master/BTSpy).
+5. Press and release the reset button on the board to get BTSpy logs.
 
-**Figure 6. ClientControl Screenshot**
+**Figure 6. ClientControl**
 
 ![](./images/clientcontrol.png)
 
-**Figure 7. BtSpy Screenshot**
+**Figure 7. BTSpy **
 
 ![](./images/btspy.png)
 
 
 ## Debugging
 
-You can debug the example to step through the code. In the IDE, use the **\<Application Name> Debug (KitProg3_MiniProg4)** configuration in the **Quick Panel**. For more details, see the "Program and debug" section in the [Eclipse IDE for ModusToolbox software user guide](https://www.infineon.com/dgdl/Infineon-Eclipse_IDE_for_ModusToolbox_User_Guide_1-UserManual-v01_00-EN.pdf?fileId=8ac78c8c7d718a49017d99bcb86331e8).
+You can debug the example to step through the code. In the IDE, use the **\<Application Name> Debug (KitProg3_MiniProg4)** configuration in the **Quick Panel**. For more details, see the "Program and debug" section in the [Eclipse IDE for ModusToolbox&trade; software user guide](https://www.infineon.com/MTBEclipseIDEUserGuide).
 
 **Note:** Debugging is of limited value when there is an active Bluetooth&reg; LE connection because as soon as the Bluetooth&reg; LE device stops responding, the connection will get dropped.
 
@@ -213,11 +217,11 @@ This section explains the ModusToolbox&trade; software resources and their confi
 
    By default, all applications in a workspace share the same *design.modus* file - i.e., they share the same pin configuration. Each BSP has a default *design.modus* file in the *mtb_shared\TARGET_<bsp name>\<version>\COMPONENT_BSP_DESIGN_MODUS* directory. It is not recommended to modify the configuration of a standard BSP directly.
 
-   To modify the configuration for a single application or to create a custom BSP, see the [ModusToolbox user guide](https://www.infineon.com/dgdl/Infineon-ModusToolbox_2.4_User_Guide-Software-v01_00-EN.pdf?fileId=8ac78c8c7e7124d1017ed97e72563632). This example uses the default configuration. See the [Device Configurator guide](https://www.infineon.com/dgdl/Infineon-ModusToolbox_Device_Configurator_Guide_4-UserManual-v01_00-EN.pdf?fileId=8ac78c8c7d718a49017d99ab297631cb).
+   To modify the configuration for a single application or to create a custom BSP, see the [ModusToolbox&trade; user guide](https://www.infineon.com/ModusToolboxUserGuide). This example uses the default configuration. See the [Device Configurator guide](https://www.infineon.com/dgdl/Infineon-ModusToolbox_Device_Configurator_Guide_4-UserManual-v01_00-EN.pdf?fileId=8ac78c8c7d718a49017d99ab297631cb).
 
 - **Bluetooth&reg; Configurator:** The Bluetooth&reg; peripheral has an additional configurator called the "Bluetooth&reg; Configurator" that is used to generate the Bluetooth&reg; LE GATT database and various Bluetooth&reg; settings for the application. These settings are stored in the file named *design.cybt*.
 
-   Note that unlike the Device Configurator, the Bluetooth&reg; Configurator settings and files are local to each respective application. The services and characteristics added are explained in the [Design and implementation](#design-and-implementation) section. See the [Bluetooth Configurator guide](https://www.infineon.com/dgdl/Infineon-ModusToolbox_Bluetooth_Configurator_Guide_3-UserManual-v01_00-EN.pdf?fileId=8ac78c8c7d718a49017d99aaf5b231be).
+   Note that unlike the Device Configurator, the Bluetooth&reg; Configurator settings and files are local to each respective application. The services and characteristics added are explained in the [Design and implementation](#design-and-implementation) section. See the [Bluetooth&reg; Configurator guide](https://www.infineon.com/dgdl/Infineon-ModusToolbox_Bluetooth_Configurator_Guide_3-UserManual-v01_00-EN.pdf?fileId=8ac78c8c7d718a49017d99aaf5b231be).
 
 **Table 1. Application resources**
 
@@ -231,11 +235,11 @@ This section explains the ModusToolbox&trade; software resources and their confi
 
 Resources | Links
 -------|-----
-Code examples  | [Using ModusToolbox software](https://github.com/Infineon/Code-Examples-for-ModusToolbox-Software) on GitHub
+Code examples  | [Using ModusToolbox&reg; software](https://github.com/Infineon/Code-Examples-for-ModusToolbox-Software) on GitHub
 Development kits | Select your kits from the [Evaluation Board Finder](https://www.infineon.com/cms/en/design-support/finder-selection-tools/product-finder/evaluation-board) page.
-Libraries on GitHub | [abstraction-rtos](https://github.com/Infineon/abstraction-rtos) – RTOS Abstraction Library <br> [clib-support](https://github.com/Infineon/clib-support) – CLib Support Library <br>  [btstack](https://github.com/Infineon/btstack) - BTSTACK <br> [btstack-integration](https://github.com/Infineon/btstack-integration) – BTSTACK Porting Layer <br> [core-lib](https://github.com/Infineon/core-lib) – Core Library <br> [core-make](https://github.com/Infineon/core-make) – Core GNU make Build System <br> [freertos](https://github.com/Infineon/freertos) – FreeRTOS for Infineon MCUs <br> [mtb-hal-cat1](https://github.com/Infineon/mtb-hal-cat1) – Hardware Abstraction Layer <br> [mtb-pdl-cat1](https://github.com/Infineon/mtb-pdl-cat1) – ModusToolbox&trade; CAT1A Peripheral Driver Library <br> [recipe-make-cat1b](https://github.com/Infineon/recipe-make-cat1b) – PSoC&trade; 6 GNU make Build System
+Libraries on GitHub | [abstraction-rtos](https://github.com/Infineon/abstraction-rtos) – RTOS Abstraction Library <br> [clib-support](https://github.com/Infineon/clib-support) – CLib Support Library <br>  [btstack](https://github.com/Infineon/btstack) – BTSTACK <br> [btstack-integration](https://github.com/Infineon/btstack-integration) – BTSTACK Porting Layer <br> [core-lib](https://github.com/Infineon/core-lib) – Core Library <br> [core-make](https://github.com/Infineon/core-make) – Core GNU make Build System <br> [freertos](https://github.com/Infineon/freertos) – FreeRTOS for Infineon MCUs <br> [mtb-hal-cat1](https://github.com/Infineon/mtb-hal-cat1) – Hardware Abstraction Layer <br> [mtb-pdl-cat1](https://github.com/Infineon/mtb-pdl-cat1) – ModusToolbox&trade; CAT1A Peripheral Driver Library <br> [recipe-make-cat1b](https://github.com/Infineon/recipe-make-cat1b) – PSoC&trade; 6 GNU make Build System
 Middleware on GitHub | [btsdk-ble](https://github.com/Infineon/btsdk-ble) – BTSDK Bluetooth&#174; LE library <br> [modustoolbox-software](https://github.com/Infineon/modustoolbox-software) – Links to all ModusToolbox&trade; middleware
-Tools  | [Eclipse IDE for ModusToolbox software](https://www.cypress.com/modustoolbox) – ModusToolbox&trade; software is a collection of easy-to-use software and tools enabling rapid development with Infineon MCUs, covering applications from embedded sense and control to wireless and cloud-connected systems using AIROC&trade; Wi-Fi and Bluetooth&reg; connectivity devices.
+Tools  | [Eclipse IDE for ModusToolbox&trade; software](https://www.infineon.com/modustoolbox) – ModusToolbox&trade; software is a collection of easy-to-use software and tools enabling rapid development with Infineon MCUs, covering applications from embedded sense and control to wireless and cloud-connected systems using AIROC&trade; Wi-Fi and Bluetooth&reg; connectivity devices.
 
 
 ## Other resources
@@ -245,11 +249,17 @@ Infineon provides a wealth of data at www.infineon.com to help you select the ri
 
 ## Document history
 
-Document title: *CE235038* – *Bluetooth LE Extended Advertisement Beacon*
+Document title: *CE235038* – *Bluetooth&reg; LE Extended Advertisement Beacon*
 
 | Version | Description of change |
 | ------- | --------------------- |
 | 1.0.0   | New code example      |
+| 2.0.0   | Updated to support ModusToolbox&trade; software v3.0 and BSPs v4.x|
+
+**Notes:**
+
+1. The version v2.0.0 of the CE is not backward compatible with earlier versions of ModusToolbox&trade;, only works with ModusToolbox&trade; software v3.0.
+
 
 -------------------------------------------------------------------------------
 
@@ -257,4 +267,4 @@ Document title: *CE235038* – *Bluetooth LE Extended Advertisement Beacon*
 <br>
 TO THE EXTENT PERMITTED BY APPLICABLE LAW, CYPRESS MAKES NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, WITH REGARD TO THIS DOCUMENT OR ANY SOFTWARE OR ACCOMPANYING HARDWARE, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  No computing device can be absolutely secure.  Therefore, despite security measures implemented in Cypress hardware or software products, Cypress shall have no liability arising out of any security breach, such as unauthorized access to or use of a Cypress product.  CYPRESS DOES NOT REPRESENT, WARRANT, OR GUARANTEE THAT CYPRESS PRODUCTS, OR SYSTEMS CREATED USING CYPRESS PRODUCTS, WILL BE FREE FROM CORRUPTION, ATTACK, VIRUSES, INTERFERENCE, HACKING, DATA LOSS OR THEFT, OR OTHER SECURITY INTRUSION (collectively, "Security Breach").  Cypress disclaims any liability relating to any Security Breach, and you shall and hereby do release Cypress from any claim, damage, or other liability arising from any Security Breach.  In addition, the products described in these materials may contain design defects or errors known as errata which may cause the product to deviate from published specifications.  To the extent permitted by applicable law, Cypress reserves the right to make changes to this document without further notice. Cypress does not assume any liability arising out of the application or use of any product or circuit described in this document.  Any information provided in this document, including any sample design information or programming code, is provided only for reference purposes.  It is the responsibility of the user of this document to properly design, program, and test the functionality and safety of any application made of this information and any resulting product.  "High-Risk Device" means any device or system whose failure could cause personal injury, death, or property damage.  Examples of High-Risk Devices are weapons, nuclear installations, surgical implants, and other medical devices.  "Critical Component" means any component of a High-Risk Device whose failure to perform can be reasonably expected to cause, directly or indirectly, the failure of the High-Risk Device, or to affect its safety or effectiveness.  Cypress is not liable, in whole or in part, and you shall and hereby do release Cypress from any claim, damage, or other liability arising from any use of a Cypress product as a Critical Component in a High-Risk Device.  You shall indemnify and hold Cypress, including its affiliates, and its directors, officers, employees, agents, distributors, and assigns harmless from and against all claims, costs, damages, and expenses, arising out of any claim, including claims for product liability, personal injury or death, or property damage arising from any use of a Cypress product as a Critical Component in a High-Risk Device.  Cypress products are not intended or authorized for use as a Critical Component in any High-Risk Device except to the limited extent that (i) Cypress’s published data sheet for the product explicitly states Cypress has qualified the product for use in a specific High-Risk Device, or (ii) Cypress has given you advance written authorization to use the product as a Critical Component in the specific High-Risk Device and you have signed a separate indemnification agreement.
 <br>
-Cypress, the Cypress logo, and combinations thereof, ModusToolBox, PSoC, CapSense, EZ-USB, F-RAM, and Traveo are trademarks or registered trademarks of Cypress or a subsidiary of Cypress in the United States or in other countries.  For a more complete list of Cypress trademarks, visit infineon.com.  Other names and brands may be claimed as property of their respective owners.
+Cypress, the Cypress logo, and combinations thereof, ModusToolBox, PSoC, CapSense, EZ-USB, F-RAM, and Traveo are trademarks or registered trademarks of Cypress or a subsidiary of Cypress in the United States or in other countries.  For a more complete list of Cypress trademarks, visit www.infineon.com.  Other names and brands may be claimed as property of their respective owners.

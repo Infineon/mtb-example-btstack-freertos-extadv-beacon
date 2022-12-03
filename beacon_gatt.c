@@ -397,7 +397,7 @@ wiced_bt_gatt_status_t beacon_gatts_callback(wiced_bt_gatt_evt_t event, wiced_bt
 
     case GATT_GET_RESPONSE_BUFFER_EVT:
         p_data->buffer_request.buffer.p_app_rsp_buffer = app_alloc_buffer (p_data->buffer_request.len_requested);
-        p_data->buffer_request.buffer.p_app_ctxt       = app_free_buffer;
+        p_data->buffer_request.buffer.p_app_ctxt       = (void *)app_free_buffer;
         result = WICED_BT_GATT_SUCCESS;
         break;
 
