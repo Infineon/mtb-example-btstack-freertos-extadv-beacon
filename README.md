@@ -4,11 +4,14 @@ This code example demonstrates the implementation of Bluetooth&reg; LE extended 
 
 [View this README on GitHub.](https://github.com/Infineon/mtb-example-btstack-freertos-extadv-beacon)
 
-[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMzUwMzgiLCJTcGVjIE51bWJlciI6IjAwMi0zNTAzOCIsIkRvYyBUaXRsZSI6IkJUU1RBQ0s6IEJsdWV0b290aCZyZWc7IExFIEV4dGVuZGVkIEFkdmVydGlzZW1lbnQgQmVhY29uIiwicmlkIjoidHRvbSIsIkRvYyB2ZXJzaW9uIjoiMi4xLjAiLCJEb2MgTGFuZ3VhZ2UiOiJFbmdsaXNoIiwiRG9jIERpdmlzaW9uIjoiTUNEIiwiRG9jIEJVIjoiSUNXIiwiRG9jIEZhbWlseSI6IkJUQUJMRSJ9)
+[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMzUwMzgiLCJTcGVjIE51bWJlciI6IjAwMi0zNTAzOCIsIkRvYyBUaXRsZSI6IkJUU1RBQ0s6IEJsdWV0b290aCZyZWc7IExFIEV4dGVuZGVkIEFkdmVydGlzZW1lbnQgQmVhY29uIiwicmlkIjoidHRvbSIsIkRvYyB2ZXJzaW9uIjoiMi4yLjAiLCJEb2MgTGFuZ3VhZ2UiOiJFbmdsaXNoIiwiRG9jIERpdmlzaW9uIjoiTUNEIiwiRG9jIEJVIjoiSUNXIiwiRG9jIEZhbWlseSI6IkJUQUJMRSJ9)
 
 ## Requirements
 
 - [ModusToolbox&trade; software](https://www.infineon.com/modustoolbox) v3.0
+- Board support package (BSP) minimum required version for:
+   - CYW920829M2EVK-02 : v1.0.1
+   - CYW989829M2EVB-01 : v1.0.1
 - Programming language: C
 - Associated parts: [AIROC&trade; CYW20829 Bluetooth&reg; LE SoC](https://www.infineon.com/cms/en/product/promopages/airoc20829/)
 
@@ -21,7 +24,8 @@ This code example demonstrates the implementation of Bluetooth&reg; LE extended 
 
 ## Supported kits (make variable 'TARGET')
 
-- AIROC&trade; [CYW920829M2EVK-02](https://www.infineon.com/cms/en/product/promopages/airoc20829/)
+- [AIROC&trade; CYW20829 Bluetooth® LE evaluation kit](https://www.infineon.com/CYW920829M2EVK-02) (`CYW920829M2EVK-02`) - Default value of `TARGET`
+- AIROC&trade; CYW89829 Bluetooth® LE evaluation kit (`CYW989829M2EVB-01`)
 
 ## Hardware setup
 
@@ -255,7 +259,8 @@ Document title: *CE235038* – *Bluetooth&reg; LE Extended Advertisement Beacon*
 | ------- | --------------------- |
 | 1.0.0   | New code example      |
 | 2.0.0   | Updated to support ModusToolbox&trade; software v3.0 and BSPs v4.x|
-| 2.1.0   | Added support for CYW920829M2EVK-02 <br> Removed CYW920829M2EVB-01 from supported kits
+| 2.1.0   | Added support for CYW920829M2EVK-02 <br> Removed CYW920829M2EVB-01 from supported kits |
+| 2.2.0   | Update README to reflect minimum BSP support for CYW920829M2EVK-02 and add support for CYW989829M2EVB-01 |
 
 **Notes:**
 
