@@ -13,6 +13,7 @@
 #include "cycfg_gap.h"
 #include "cycfg_gatt_db.h"
 #include "beacon.h"
+#include "cy_retarget_io.h"
 
 extern const wiced_bt_cfg_settings_t app_cfg_settings;
 typedef void (*pfn_free_buffer_t)(uint8_t *);
@@ -23,7 +24,6 @@ typedef void (*pfn_free_buffer_t)(uint8_t *);
 static uint8_t * app_alloc_buffer(uint16_t len)
 {
     uint8_t *p = (uint8_t *)wiced_bt_get_buffer(len);
-    WICED_BT_TRACE("[%s] len %d alloc 0x%x", __FUNCTION__, len, p);
 
     return p;
 }
@@ -31,8 +31,6 @@ static uint8_t * app_alloc_buffer(uint16_t len)
 static void app_free_buffer(uint8_t *p_data)
 {
     wiced_bt_free_buffer(p_data);
-
-    WICED_BT_TRACE("[%s] 0x%x", __FUNCTION__, p_data);
 }
 
 /******************************************************************************
@@ -115,7 +113,7 @@ wiced_bt_gatt_status_t beacon_req_read_by_type_handler(uint16_t conn_id,
 
     if (p_rsp == NULL)
     {
-        WICED_BT_TRACE("[%s] no memory len_requested: %d!!\n", __FUNCTION__,
+        printf("[%s] no memory len_requested: %d!!\n", __FUNCTION__,
                 len_requested);
         wiced_bt_gatt_server_send_error_rsp(conn_id, opcode, attr_handle,
                 WICED_BT_GATT_INSUF_RESOURCE);
@@ -145,7 +143,7 @@ wiced_bt_gatt_status_t beacon_req_read_by_type_handler(uint16_t conn_id,
             break;
 
         default:
-            WICED_BT_TRACE("[%s] found type but no attribute ??\n", __FUNCTION__);
+            printf("[%s] found type but no attribute ??\n", __FUNCTION__);
             wiced_bt_gatt_server_send_error_rsp(conn_id, opcode,
                     p_read_req->s_handle, WICED_BT_GATT_ERR_UNLIKELY);
             wiced_bt_free_buffer(p_rsp);
@@ -171,7 +169,7 @@ wiced_bt_gatt_status_t beacon_req_read_by_type_handler(uint16_t conn_id,
 
     if (used == 0)
     {
-        WICED_BT_TRACE("[%s] attr not found 0x%04x -  0x%04x Type: 0x%04x\n",
+        printf("[%s] attr not found 0x%04x -  0x%04x Type: 0x%04x\n",
                 __FUNCTION__, p_read_req->s_handle, p_read_req->e_handle,
                 p_read_req->uuid.uu.uuid16);
 
@@ -207,7 +205,7 @@ wiced_bt_gatt_status_t beacon_req_read_multi_handler(uint16_t conn_id,
 
     if (p_rsp == NULL)
     {
-        WICED_BT_TRACE ("[%s] no memory len_requested: %d!!\n", __FUNCTION__,
+        printf ("[%s] no memory len_requested: %d!!\n", __FUNCTION__,
                 len_requested);
 
         wiced_bt_gatt_server_send_error_rsp(conn_id, opcode, handle,
@@ -233,7 +231,7 @@ wiced_bt_gatt_status_t beacon_req_read_multi_handler(uint16_t conn_id,
             break;
 
         default:
-            WICED_BT_TRACE ("[%s] no handle 0x%04xn", __FUNCTION__, handle);
+            printf ("[%s] no handle 0x%04xn", __FUNCTION__, handle);
             wiced_bt_gatt_server_send_error_rsp(conn_id, opcode,
                     *p_read_req->p_handle_stream, WICED_BT_GATT_ERR_UNLIKELY);
             wiced_bt_free_buffer(p_rsp);
@@ -254,7 +252,7 @@ wiced_bt_gatt_status_t beacon_req_read_multi_handler(uint16_t conn_id,
 
     if (used == 0)
     {
-        WICED_BT_TRACE ("[%s] no attr found\n", __FUNCTION__);
+        printf ("[%s] no attr found\n", __FUNCTION__);
 
         wiced_bt_gatt_server_send_error_rsp(conn_id, opcode,
                 *p_read_req->p_handle_stream, WICED_BT_GATT_INVALID_HANDLE);
@@ -276,7 +274,7 @@ wiced_bt_gatt_status_t beacon_write_handler(uint16_t conn_id,
         wiced_bt_gatt_opcode_t opcode,
         wiced_bt_gatt_write_req_t* p_data)
 {
-    WICED_BT_TRACE("[%s] conn_id:%d handle:%04x\n", __FUNCTION__, conn_id,
+    printf("[%s] conn_id:%d handle:%04x\n", __FUNCTION__, conn_id,
             p_data->handle);
 
     return WICED_BT_GATT_SUCCESS;
@@ -287,7 +285,7 @@ wiced_bt_gatt_status_t beacon_write_handler(uint16_t conn_id,
  */
 wiced_bt_gatt_status_t beacon_req_mtu_handler( uint16_t conn_id, uint16_t mtu)
 {
-    WICED_BT_TRACE("req_mtu: %d\n", mtu);
+    printf("req_mtu: %d\n", mtu);
     wiced_bt_gatt_server_send_mtu_rsp(conn_id, mtu,
             app_cfg_settings.p_ble_cfg->ble_max_rx_pdu_size);
     return WICED_BT_GATT_SUCCESS;
@@ -299,7 +297,7 @@ wiced_bt_gatt_status_t beacon_req_mtu_handler( uint16_t conn_id, uint16_t mtu)
 wiced_bt_gatt_status_t beacon_req_value_conf_handler(uint16_t conn_id,
         uint16_t handle)
 {
-    WICED_BT_TRACE("[%s] conn_id:%d handle:%x\n", __FUNCTION__, conn_id, handle);
+    printf("[%s] conn_id:%d handle:%x\n", __FUNCTION__, conn_id, handle);
 
     return WICED_BT_GATT_SUCCESS;
 }
@@ -370,7 +368,7 @@ wiced_bt_gatt_status_t beacon_gatts_req_callback(wiced_bt_gatt_attribute_request
             break;
 
        default:
-            WICED_BT_TRACE("Invalid GATT request conn_id:%d opcode:%d\n",
+            printf("Invalid GATT request conn_id:%d opcode:%d\n",
                     p_data->conn_id, p_data->opcode);
             break;
     }

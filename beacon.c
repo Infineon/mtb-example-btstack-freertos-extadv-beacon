@@ -39,6 +39,8 @@
 #include "cyhal.h"
 #include "cybt_debug_uart.h"
 #endif
+#include "cy_retarget_io.h"
+#include <inttypes.h>
 
 /******************************************************************************
  *                                Defines
@@ -191,7 +193,7 @@ static uint8_t beacon_set_ibeacon_advertisement_data(beacon_adv_data_t adv_data)
     uint16_t ibeacon_minor_number = 0x02;
     uint8_t tx_power_lcl = 0xb3;
 
-    WICED_BT_TRACE("beacon_set_ibeacon_advertisement_data\n");
+    printf("beacon_set_ibeacon_advertisement_data\n");
 
     /* Call iBeacon api to prepare adv data*/
     wiced_bt_ibeacon_set_adv_data(ibeacon_uuid, ibeacon_major_number, ibeacon_minor_number, tx_power_lcl, adv_data, &len);
@@ -216,7 +218,7 @@ static void beacon_start(uint8_t instance, uint8_t idx)
     beacon_adv_data_t buff;
     uint8_t len;
 
-    WICED_BT_TRACE("beacon_start instance %d for index %d\n", instance, idx);
+    printf("beacon_start instance %d for index %d\n", instance, idx);
     adv[idx].id = instance;
     beacon_set_instance_params(instance, adv[idx].interval);
     random_bda[1] = idx; // make address unique
@@ -240,7 +242,7 @@ static uint8_t beacon_stop(uint8_t idx)
     // check if it is in use (advertizing)
     if (instance)
     {
-        WICED_BT_TRACE("beacon_stop instance %d\n", instance);
+        printf("beacon_stop instance %d\n", instance);
         adv[idx].id = 0;    // mark as adv stopped
         wiced_bt_ble_start_ext_adv(MULTI_ADVERT_STOP, 1, &duration_cfg[beacon_idx(instance)]);
     }
@@ -296,7 +298,7 @@ static void beacon_switch_adv(WICED_TIMER_PARAM_TYPE arg)
     }
     else
     {
-        WICED_BT_TRACE("No free instance\n");
+        printf("No free instance\n");
     }
 }
 
@@ -318,7 +320,7 @@ static void beacon_set_timer(void)
  */
 static void beacon_adv_init()
 {
-    WICED_BT_TRACE("beacon_adv_init\n");
+    printf("beacon_adv_init\n");
 
     /* Set the advertising params and make the device discoverable */
     beacon_set_app_advertisement_data();
@@ -330,7 +332,7 @@ static void beacon_adv_init()
         supported_adv = BEACON_CNT;
     }
 
-    WICED_BT_TRACE("Supported adv set: %d\n", supported_adv);
+    printf("Supported adv set: %d\n", supported_adv);
 
     // start adv.
     for (int idx=0; idx<supported_adv; idx++)
@@ -363,12 +365,12 @@ static void beacon_init(void)
     /* Register with stack to receive GATT callback */
     gatt_status = wiced_bt_gatt_register(beacon_gatts_callback);
 
-    WICED_BT_TRACE("wiced_bt_gatt_register: %d\n", gatt_status);
+    printf("wiced_bt_gatt_register: %d\n", gatt_status);
 
     /*  Tell stack to use our GATT database */
     gatt_status =  wiced_bt_gatt_db_init( gatt_database, gatt_database_len, beacon_db_hash );
 
-    WICED_BT_TRACE("wiced_bt_gatt_db_init %d\n", gatt_status);
+    printf("wiced_bt_gatt_db_init %d\n", gatt_status);
 
     /* Allow peer to pair */
     wiced_bt_set_pairable_mode(WICED_TRUE, 0);
@@ -388,11 +390,11 @@ static void beacon_advertisement_stopped(void)
     if (beacon_conn_id == 0)
     {
         result =  wiced_bt_start_advertisements(BTM_BLE_ADVERT_UNDIRECTED_LOW, 0, NULL);
-        WICED_BT_TRACE("wiced_bt_start_advertisements: %d\n", result);
+        printf("wiced_bt_start_advertisements: %d\n", result);
     }
     else
     {
-        WICED_BT_TRACE("ADV stop\n");
+        printf("ADV stop\n");
     }
 }
 
@@ -403,10 +405,9 @@ static void beacon_advertisement_stopped(void)
 static wiced_result_t beacon_management_callback(wiced_bt_management_evt_t event, wiced_bt_management_evt_data_t *p_event_data)
 {
     wiced_result_t                    result = WICED_BT_SUCCESS;
-//    uint8_t                          *p_keys;
     wiced_bt_ble_advert_mode_t       *p_mode;
 
-    WICED_BT_TRACE("beacon_management_callback: %x\n", event);
+    printf("beacon_management_callback: %x\n", event);
 
     switch(event)
     {
@@ -419,17 +420,17 @@ static wiced_result_t beacon_management_callback(wiced_bt_management_evt_t event
         break;
 
     case BTM_USER_CONFIRMATION_REQUEST_EVT:
-        WICED_BT_TRACE("Numeric_value: %d \n", p_event_data->user_confirmation_request.numeric_value);
+        printf("Numeric_value: %"PRIu32" \n", p_event_data->user_confirmation_request.numeric_value);
         wiced_bt_dev_confirm_req_reply( WICED_BT_SUCCESS , p_event_data->user_confirmation_request.bd_addr);
         break;
 
     case BTM_PASSKEY_NOTIFICATION_EVT:
-        WICED_BT_TRACE("PassKey Notification. BDA %B, Key %d \n", p_event_data->user_passkey_notification.bd_addr, p_event_data->user_passkey_notification.passkey );
+        printf("PassKey Notification. BDA %s, Key %"PRIu32" \n", p_event_data->user_passkey_notification.bd_addr, p_event_data->user_passkey_notification.passkey );
         wiced_bt_dev_confirm_req_reply(WICED_BT_SUCCESS, p_event_data->user_passkey_notification.bd_addr );
         break;
 
     case BTM_PAIRING_IO_CAPABILITIES_BLE_REQUEST_EVT:
-        WICED_BT_TRACE("BTM_PAIRING_IO_CAPABILITIES_BLE_REQUEST_EVT:\n" );
+        printf("BTM_PAIRING_IO_CAPABILITIES_BLE_REQUEST_EVT:\n" );
         p_event_data->pairing_io_capabilities_ble_request.local_io_cap  = BTM_IO_CAPABILITIES_NONE;
         p_event_data->pairing_io_capabilities_ble_request.oob_data      = BTM_OOB_NONE;
         p_event_data->pairing_io_capabilities_ble_request.auth_req      = BTM_LE_AUTH_REQ_BOND | BTM_LE_AUTH_REQ_MITM;
@@ -453,7 +454,7 @@ static wiced_result_t beacon_management_callback(wiced_bt_management_evt_t event
 
     case BTM_BLE_ADVERT_STATE_CHANGED_EVT:
         p_mode = &p_event_data->ble_advert_state_changed;
-        WICED_BT_TRACE("Advertisement State Change: %d\n", *p_mode);
+        printf("Advertisement State Change: %d\n", *p_mode);
         if (*p_mode == BTM_BLE_ADVERT_OFF)
         {
             beacon_advertisement_stopped();
@@ -461,7 +462,7 @@ static wiced_result_t beacon_management_callback(wiced_bt_management_evt_t event
         break;
 
     default:
-        WICED_BT_TRACE("Not handled\n");
+        printf("Not handled\n");
         break;
     }
 
@@ -488,7 +489,7 @@ wiced_bt_gatt_status_t beacon_connection_status_event(wiced_bt_gatt_connection_s
     {
         beacon_conn_id = 0;
         result =  wiced_bt_start_advertisements(BTM_BLE_ADVERT_UNDIRECTED_HIGH, 0, NULL);
-        WICED_BT_TRACE("[%s] start adv status %d \n", __FUNCTION__, result);
+        printf("[%s] start adv status %d \n", __FUNCTION__, result);
     }
     return WICED_BT_GATT_SUCCESS;
 }
@@ -500,15 +501,15 @@ wiced_bt_gatt_status_t beacon_connection_status_event(wiced_bt_gatt_connection_s
  */
 void application_start( void )
 {
-    WICED_BT_TRACE("application_start A\n");
+    printf("application_start A\n");
 
     // Register call back and configuration with stack
     wiced_bt_stack_init (beacon_management_callback, &app_cfg_settings);
 
-    WICED_BT_TRACE("application_start B\n");
+    printf("application_start B\n");
 
     /* Create a buffer heap, make it the default heap.  */
     wiced_bt_create_heap("app", NULL, APP_HEAP_SIZE, NULL, WICED_TRUE);
 
-    WICED_BT_TRACE("Beacon Application Start\n");
+    printf("Beacon Application Start\n");
 }

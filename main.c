@@ -15,6 +15,7 @@
 #include "stdio.h"
 #include <FreeRTOS.h>
 #include "cybsp.h"
+#include "cybsp_bt_config.h"
 #include "cybt_platform_config.h"
 #include "cybt_platform_trace.h"
 #include "wiced_bt_trace.h"
@@ -29,28 +30,6 @@
 #define CYBSP_BAUD_RATE_FW_DOWNLOAD 115200
 
 extern void vTaskStartScheduler( void );
-
-const cybt_platform_config_t bt_platform_cfg_settings =
-{
-    .hci_config =
-    {
-        .hci_transport = CYBT_HCI_IPC,
-    },
-
-    .controller_config =
-    {
-        .bt_power_pin      = NC,
-#if defined(CY_CFG_PWR_SYS_IDLE_MODE) && \
-                   ((CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_SLEEP) || \
-                   (CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_DEEPSLEEP))
-        .sleep_mode = { .sleep_mode_enabled = 1 },
-#else
-        .sleep_mode = { .sleep_mode_enabled = 0 },
-#endif
-    },
-
-    .task_mem_pool_size    = 2048
-};
 
 int main()
 {
@@ -85,13 +64,13 @@ int main()
     }
 #endif //ENABLE_BT_SPY_LOG
 
-    WICED_BT_TRACE("main start!\n");
+    printf("main start!\n");
     cybt_platform_set_trace_level(CYBT_TRACE_ID_STACK, CYBT_TRACE_ID_MAX);
-    cybt_platform_config_init(&bt_platform_cfg_settings);
+    cybt_platform_config_init(&cybsp_bt_platform_cfg);
     /* Initialize GPIO for button interrupt*/
     if(CY_RSLT_SUCCESS != cyhal_gpio_init(CYBSP_USER_BTN, CYHAL_GPIO_DIR_INPUT, CYHAL_GPIO_DRIVE_PULLUP, CYBSP_BTN_OFF))
     {
-        WICED_BT_TRACE("Button GPIO init failed! \n");
+        printf("Button GPIO init failed! \n");
         CY_ASSERT(0);
     }
 
