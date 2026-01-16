@@ -13,7 +13,11 @@
 #include "cycfg_gap.h"
 #include "cycfg_gatt_db.h"
 #include "beacon.h"
+#ifndef ENABLE_BT_SPY_LOG
 #include "cy_retarget_io.h"
+#else
+#include <stdio.h>
+#endif
 
 extern const wiced_bt_cfg_settings_t app_cfg_settings;
 typedef void (*pfn_free_buffer_t)(uint8_t *);
@@ -37,13 +41,67 @@ static void app_free_buffer(uint8_t *p_data)
  *                          Function Definitions
  ******************************************************************************/
 
+static int beacon_write_adv_data_to_buffer(uint8_t *p_buf, int buf_len,
+                                            wiced_bt_ble_advert_type_t adv_type,
+                                            uint8_t *p_type_data, uint16_t type_len)
+{
+    uint8_t len = 0;
+    uint8_t *p  = p_buf;
+
+    if ((len + type_len + 2) > buf_len)
+    {
+        return 0;
+    }
+
+    UINT8_TO_STREAM(p, type_len + 1);
+    UINT8_TO_STREAM(p, adv_type);
+    ARRAY_TO_STREAM(p, p_type_data, type_len);
+
+    return p - p_buf;
+}
+
+static int beacon_write_adv_elements_to_buffer(uint8_t *p_buf, int buf_len,
+                                                uint8_t num_elem, wiced_bt_ble_advert_elem_t *p_elem)
+{
+    int used = 0;
+    if (p_elem != NULL && num_elem)
+    {
+        while (num_elem--)
+        {
+            int written = beacon_write_adv_data_to_buffer(p_buf + used,
+                buf_len - used, p_elem->advert_type, p_elem->p_data, p_elem->len);
+            if (!written)
+            {
+                return 0;
+            }
+            used += written;
+            p_elem++;
+        }
+    }
+    return used;
+}
+
 /*
  * Setup advertisement data with configured advertisment array from BTConfigurator
  * By default, includes 16 byte UUID and device name
  */
-void beacon_set_app_advertisement_data(void)
+void beacon_set_app_advertisement_data(wiced_ble_ext_adv_handle_t adv_handle)
 {
-    wiced_bt_ble_set_raw_advertisement_data(CY_BT_ADV_PACKET_DATA_SIZE, cy_bt_adv_packet_data);
+    //wiced_bt_ble_set_raw_advertisement_data(CY_BT_ADV_PACKET_DATA_SIZE, cy_bt_adv_packet_data);
+    uint8_t     buf[BTM_BLE_LEGACY_AD_DATA_LEN];
+    uint8_t     len = 0;
+    wiced_bt_dev_status_t status;
+
+    memset(buf, 0, BTM_BLE_LEGACY_AD_DATA_LEN);
+
+    len = beacon_write_adv_elements_to_buffer(buf, sizeof(buf), CY_BT_ADV_PACKET_DATA_SIZE, cy_bt_adv_packet_data);
+
+    status = wiced_ble_ext_adv_set_adv_data(adv_handle, len, buf);
+
+    if (WICED_BT_SUCCESS != status)
+    {
+        printf("Error! wiced_ble_ext_adv_set_adv_data for legacy adv returns %d\n", status);
+    }
 }
 
 /*

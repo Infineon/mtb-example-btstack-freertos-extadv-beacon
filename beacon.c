@@ -38,8 +38,10 @@
 #ifdef ENABLE_BT_SPY_LOG
 #include "cyhal.h"
 #include "cybt_debug_uart.h"
-#endif
+#include <stdio.h>
+#else
 #include "cy_retarget_io.h"
+#endif
 #include <inttypes.h>
 
 /******************************************************************************
@@ -54,31 +56,15 @@
 #define UUID_IBEACON     0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f
 
 /* Adv parameter defines */
-#define PARAM_EVENT_PROPERTY    (WICED_BT_BLE_EXT_ADV_EVENT_CONNECTABLE_ADV|WICED_BT_BLE_EXT_ADV_EVENT_SCANNABLE_ADV|WICED_BT_BLE_EXT_ADV_EVENT_LEGACY_ADV)    // wiced_bt_ble_ext_adv_event_property_t
+#define PARAM_EVENT_PROPERTY    (WICED_BLE_EXT_ADV_EVENT_PROPERTY_CONNECTABLE_ADV | WICED_BLE_EXT_ADV_EVENT_PROPERTY_SCANNABLE_ADV | WICED_BLE_EXT_ADV_EVENT_PROPERTY_LEGACY_ADV)    // wiced_ble_ext_adv_event_property_t
 #define PARAM_FILTER_POLICY     (BTM_BLE_ADV_POLICY_ACCEPT_CONN_AND_SCAN)       // wiced_bt_ble_advert_filter_policy_t
 #define PARAM_TX_POWER_MAX      0x7f                                            // tBTM_BLE_ADV_TX_POWER
-#define PARAM_SCAN_REQ_NOTIF    WICED_BT_BLE_EXT_ADV_SCAN_REQ_NOTIFY_ENABLE     // wiced_bt_ble_ext_adv_scan_req_notification_setting_t
+#define PARAM_SCAN_REQ_NOTIF    WICED_BLE_EXT_ADV_SCAN_REQ_NOTIFY_ENABLE        // wiced_ble_ext_adv_scan_req_notification_setting_t
 
+#define becaon_legacy_adv_id 0
 #define beacon_idx(i) (i-1)
 #define beacon_adv_id(i) (i+1)
 #define valid_instance(i) (i <= supported_adv)
-
-#define beacon_set_instance_params(instance, interval)   wiced_bt_ble_set_ext_adv_parameters(\
-    instance,                           /* wiced_bt_ble_ext_adv_handle_t adv_handle */ \
-    PARAM_EVENT_PROPERTY,               /* wiced_bt_ble_ext_adv_event_property_t event_properties */ \
-    interval,                           /* uint32_t primary_adv_int_min */ \
-    interval,                           /* uint32_t primary_adv_int_max */ \
-    BTM_BLE_DEFAULT_ADVERT_CHNL_MAP,    /* wiced_bt_ble_advert_chnl_map_t primary_adv_channel_map */ \
-    BLE_ADDR_RANDOM,                    /* wiced_bt_ble_address_type_t own_addr_type */ \
-    BLE_ADDR_RANDOM,                    /* wiced_bt_ble_address_type_t peer_addr_type */ \
-    peer_addr,                          /* wiced_bt_device_address_t peer_addr */ \
-    PARAM_FILTER_POLICY,                /* wiced_bt_ble_advert_filter_policy_t adv_filter_policy */ \
-    PARAM_TX_POWER_MAX,                 /* int8_t adv_tx_power */ \
-    WICED_BT_BLE_EXT_ADV_PHY_1M,        /* wiced_bt_ble_ext_adv_phy_t primary_adv_phy */ \
-    0,                                  /* uint8_t secondary_adv_max_skip */ \
-    0,                                  /* wiced_bt_ble_ext_adv_phy_t secondary_adv_phy */ \
-    0,                                  /* wiced_bt_ble_ext_adv_sid_t adv_sid */ \
-    PARAM_SCAN_REQ_NOTIF);              /* wiced_bt_ble_ext_adv_scan_req_notification_setting_t scan_request_not */
 
 /******************************************************************************
  *                                Structures
@@ -101,11 +87,13 @@ typedef struct
 /******************************************************************************
  *                              Variables Definitions
  ******************************************************************************/
+extern const char                               brcm_patch_version[];
 static uint8_t                                  supported_adv;
 static wiced_bt_device_address_t                peer_addr = {0,0,0,0,0,0};
 static uint16_t                                 beacon_conn_id = 0;
 static wiced_bt_db_hash_t                       beacon_db_hash;
-static wiced_bt_ble_ext_adv_duration_config_t   duration_cfg[BEACON_CNT] = {{1},{2},{3},{4},{5}};
+static wiced_ble_ext_adv_duration_config_t      duration_cfg_legacy = {becaon_legacy_adv_id, 0, 0};
+static wiced_ble_ext_adv_duration_config_t      duration_cfg[BEACON_CNT] = {{1},{2},{3},{4},{5}};
 static wiced_timer_t                            beacon_timer;
 static uint8_t                                  adv_idx = 0;
 
@@ -113,6 +101,96 @@ extern const wiced_bt_cfg_settings_t app_cfg_settings;
 /******************************************************************************
  *     Private Function Definitions
  ******************************************************************************/
+static void beacon_advertisement_stopped(void);
+
+/**************************************************************************************************
+* Function Name: beacon_ext_adv_callback()
+***************************************************************************************************
+* Function Description:
+* @brief
+* This function process Extended ADV events.
+* @param[in] event , The extended adv event code.
+* @param[in] p_data, Event data refer to wiced_bt_ble_adv_ext_event_data_t.
+* @return    void.
+**************************************************************************************************/
+static void beacon_ext_adv_callback(wiced_ble_ext_adv_event_t event, wiced_ble_ext_adv_event_data_t* p_data)
+{
+    switch (event)
+    {
+    case WICED_BLE_ADV_SET_TERMINATED_EVENT:
+        if (p_data->adv_set_terminated.adv_handle == becaon_legacy_adv_id)
+        {
+            beacon_advertisement_stopped();
+        }
+        break;
+    default:
+        break;
+    }
+}
+
+static void beacon_set_instance_params(wiced_ble_ext_adv_handle_t instance, uint32_t interval)
+{
+    wiced_bt_dev_status_t status;
+    wiced_ble_ext_adv_params_t param;
+
+    memset(&param, 0, sizeof(wiced_ble_ext_adv_params_t));
+    param.event_properties        = PARAM_EVENT_PROPERTY;
+    param.primary_adv_int_min     = interval;
+    param.primary_adv_int_max     = interval;
+    param.primary_adv_channel_map = BTM_BLE_DEFAULT_ADVERT_CHNL_MAP;
+    param.own_addr_type           = instance ? WICED_BLE_OWN_ADDR_RANDOM : WICED_BLE_OWN_ADDR_PUBLIC;
+    param.peer_addr_type          = instance ? BLE_ADDR_RANDOM : BLE_ADDR_PUBLIC;
+    memcpy(param.peer_addr, peer_addr, sizeof(wiced_bt_device_address_t));
+    param.adv_filter_policy      = PARAM_FILTER_POLICY;
+    param.adv_tx_power           = PARAM_TX_POWER_MAX;
+    param.primary_adv_phy        = WICED_BLE_EXT_ADV_PHY_1M;
+    param.secondary_adv_max_skip = 0;
+    param.secondary_adv_phy      = 0;
+    param.adv_sid                = 0;
+    param.scan_request_not       = instance ? PARAM_SCAN_REQ_NOTIF : 0;
+    param.primary_phy_opts       = 0;
+    param.secondary_phy_opts     = 0;
+    status = wiced_ble_ext_adv_set_params(instance, &param);
+    if (WICED_BT_SUCCESS != status)
+    {
+        printf("Error! wiced_ble_ext_adv_set_params instance %d returns %d\n", instance, status);
+    }
+}
+
+static void beacon_start_legacy_adv(wiced_bt_ble_advert_mode_t mode)
+{
+    uint8_t enable = MULTI_ADVERT_START;
+    uint32_t interval = CY_BT_HIGH_DUTY_ADV_MIN_INTERVAL;
+    wiced_bt_dev_status_t status;
+
+    switch (mode) {
+    case BTM_BLE_ADVERT_OFF:
+        enable = MULTI_ADVERT_STOP;
+        break;
+    case BTM_BLE_ADVERT_UNDIRECTED_LOW:
+        interval = CY_BT_LOW_DUTY_ADV_MIN_INTERVAL;
+        duration_cfg_legacy.adv_duration = 0;//CY_BT_LOW_DUTY_ADV_DURATION * 100;
+        break;
+    case BTM_BLE_ADVERT_UNDIRECTED_HIGH:
+        interval = CY_BT_HIGH_DUTY_ADV_MIN_INTERVAL;
+        duration_cfg_legacy.adv_duration = 0;//CY_BT_HIGH_DUTY_ADV_DURATION * 100;
+        break;
+    default:
+        printf("Error! beacon_start_legacy_adv parameter error.\n");
+        return;
+    }
+
+    if (enable != MULTI_ADVERT_STOP)
+    {
+        beacon_set_instance_params(becaon_legacy_adv_id, interval);
+        beacon_set_app_advertisement_data(becaon_legacy_adv_id);
+    }
+    status = wiced_ble_ext_adv_enable(enable, 1, &duration_cfg_legacy);
+    if (status != WICED_SUCCESS)
+    {
+        printf("Error! wiced_ble_ext_adv_enable for legacy returns %d\n", status);
+    }
+}
 
 /*
  * This function prepares Google Eddystone UID advertising data
@@ -214,20 +292,29 @@ static beacon_adv_t adv[BEACON_CNT] =
 
 static void beacon_start(uint8_t instance, uint8_t idx)
 {
-    wiced_bt_device_address_t  random_bda = {0x40, 0x01, 0x02, 0x03, 0x04, 0x05};
+    wiced_bt_device_address_t random_bda = {0x40, 0x01, 0x02, 0x03, 0x04, 0x05};
     beacon_adv_data_t buff;
     uint8_t len;
+    wiced_bt_dev_status_t status;
 
     printf("beacon_start instance %d for index %d\n", instance, idx);
     adv[idx].id = instance;
     beacon_set_instance_params(instance, adv[idx].interval);
     random_bda[1] = idx; // make address unique
-    wiced_bt_ble_set_ext_adv_random_address (instance, random_bda);
+    wiced_ble_ext_adv_set_random_address(instance, random_bda);
     len = adv[idx].set_data(buff);
 
     /* Sets adv data for this instance & start to adv */
-    wiced_bt_ble_set_ext_adv_data(instance, len, buff);
-    wiced_bt_ble_start_ext_adv(MULTI_ADVERT_START, 1, &duration_cfg[beacon_idx(instance)]);
+    status = wiced_ble_ext_adv_set_adv_data(instance, len, buff);
+    if (status != WICED_SUCCESS)
+    {
+        printf("Error! wiced_ble_ext_adv_set_adv_data returns %d\n", status);
+    }
+    status = wiced_ble_ext_adv_enable(MULTI_ADVERT_START, 1, &duration_cfg[beacon_idx(instance)]);
+    if (status != WICED_SUCCESS)
+    {
+        printf("Error! wiced_ble_ext_adv_enable returns %d\n", status);
+    }
 }
 
 /*
@@ -243,8 +330,8 @@ static uint8_t beacon_stop(uint8_t idx)
     if (instance)
     {
         printf("beacon_stop instance %d\n", instance);
-        adv[idx].id = 0;    // mark as adv stopped
-        wiced_bt_ble_start_ext_adv(MULTI_ADVERT_STOP, 1, &duration_cfg[beacon_idx(instance)]);
+        adv[idx].id = 0; // mark as adv stopped
+        wiced_ble_ext_adv_enable(MULTI_ADVERT_STOP, 1, &duration_cfg[beacon_idx(instance)]);
     }
     else
     {
@@ -320,24 +407,42 @@ static void beacon_set_timer(void)
  */
 static void beacon_adv_init()
 {
-    printf("beacon_adv_init\n");
+    printf("beacon_adv_init FW VERSION: %s\n", brcm_patch_version);
 
-    /* Set the advertising params and make the device discoverable */
-    beacon_set_app_advertisement_data();
-    wiced_bt_start_advertisements( BTM_BLE_ADVERT_UNDIRECTED_HIGH, 0, NULL );
+    /* Register for extended ADV events */
+    wiced_ble_ext_adv_register_cback(beacon_ext_adv_callback);
 
-    supported_adv = wiced_bt_ble_read_num_ext_adv_sets();
-    if (supported_adv > BEACON_CNT)
+    supported_adv = wiced_ble_ext_adv_set_max_adv_handles(
+#ifdef DEVICE_20829
+        3 //CYW20829 supports 3 sets of extended adv.
+#else
+        BEACON_CNT + 1
+#endif
+    );
+
+    if (supported_adv > BEACON_CNT + 1)
     {
-        supported_adv = BEACON_CNT;
+        supported_adv = BEACON_CNT + 1;
     }
 
-    printf("Supported adv set: %d\n", supported_adv);
-
-    // start adv.
-    for (int idx=0; idx<supported_adv; idx++)
+    if (supported_adv < 2)
     {
-        beacon_start( beacon_adv_id(idx), idx );
+        printf("Error! Only support %d adv\n", supported_adv);
+        return;
+    }
+
+    printf("Supported %d adv sets\n", supported_adv);
+
+    /* Set the advertising params and make the device discoverable */
+    beacon_start_legacy_adv(BTM_BLE_ADVERT_UNDIRECTED_HIGH);
+
+    //adv_handle 0 is used for legacy adv.
+    supported_adv -= 1;
+
+    // start beacon advs.
+    for (int idx = 0; idx < supported_adv; idx++)
+    {
+        beacon_start(beacon_adv_id(idx), idx);
     }
 
     /* start timer to change beacon ADV data */
@@ -384,13 +489,10 @@ static void beacon_init(void)
  */
 static void beacon_advertisement_stopped(void)
 {
-    wiced_result_t result;
-
     // while we are not connected
     if (beacon_conn_id == 0)
     {
-        result =  wiced_bt_start_advertisements(BTM_BLE_ADVERT_UNDIRECTED_LOW, 0, NULL);
-        printf("wiced_bt_start_advertisements: %d\n", result);
+        beacon_start_legacy_adv(BTM_BLE_ADVERT_UNDIRECTED_HIGH);
     }
     else
     {
@@ -476,20 +578,17 @@ static wiced_result_t beacon_management_callback(wiced_bt_management_evt_t event
 /*
  * Connection up/down event
  */
-wiced_bt_gatt_status_t beacon_connection_status_event(wiced_bt_gatt_connection_status_t *p_status)
+wiced_bt_gatt_status_t beacon_connection_status_event(wiced_bt_gatt_connection_status_t* p_status)
 {
-    wiced_result_t result;
-
     if (p_status->connected)
     {
         beacon_conn_id = p_status->conn_id;
-        wiced_bt_start_advertisements(BTM_BLE_ADVERT_OFF, 0, NULL);  // stop adv.
+        beacon_start_legacy_adv(BTM_BLE_ADVERT_OFF);
     }
     else
     {
         beacon_conn_id = 0;
-        result =  wiced_bt_start_advertisements(BTM_BLE_ADVERT_UNDIRECTED_HIGH, 0, NULL);
-        printf("[%s] start adv status %d \n", __FUNCTION__, result);
+        beacon_start_legacy_adv(BTM_BLE_ADVERT_UNDIRECTED_HIGH);
     }
     return WICED_BT_GATT_SUCCESS;
 }

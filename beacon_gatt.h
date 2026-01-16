@@ -15,4 +15,4 @@
 
 
 wiced_bt_gatt_status_t beacon_gatts_callback(wiced_bt_gatt_evt_t event, wiced_bt_gatt_event_data_t *p_data);
-void beacon_set_app_advertisement_data();
+void beacon_set_app_advertisement_data(wiced_ble_ext_adv_handle_t adv_handle);

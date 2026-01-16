@@ -4,7 +4,7 @@ This code example demonstrates the implementation of Bluetooth&reg; LE extended 
 
 [View this README on GitHub.](https://github.com/Infineon/mtb-example-btstack-freertos-extadv-beacon)
 
-[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMzUwMzgiLCJTcGVjIE51bWJlciI6IjAwMi0zNTAzOCIsIkRvYyBUaXRsZSI6IkJUU1RBQ0s6IEJsdWV0b290aCZyZWc7IExFIEV4dGVuZGVkIEFkdmVydGlzZW1lbnQgQmVhY29uIiwicmlkIjoidHRvbSIsIkRvYyB2ZXJzaW9uIjoiMy4wLjAiLCJEb2MgTGFuZ3VhZ2UiOiJFbmdsaXNoIiwiRG9jIERpdmlzaW9uIjoiTUNEIiwiRG9jIEJVIjoiSUNXIiwiRG9jIEZhbWlseSI6IkJUQUJMRSJ9)
+[Provide feedback on this code example.](https://yourvoice.infineon.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMzUwMzgiLCJTcGVjIE51bWJlciI6IjAwMi0zNTAzOCIsIkRvYyBUaXRsZSI6IkJUU1RBQ0s6IEJsdWV0b290aCZyZWc7IExFIEV4dGVuZGVkIEFkdmVydGlzZW1lbnQgQmVhY29uIiwicmlkIjoidGFrLnRvbWl0YUBpbmZpbmVvbi5jb20iLCJEb2MgdmVyc2lvbiI6IjQuMC4wIiwiRG9jIExhbmd1YWdlIjoiRW5nbGlzaCIsIkRvYyBEaXZpc2lvbiI6Ik1DRCIsIkRvYyBCVSI6IklDVyIsIkRvYyBGYW1pbHkiOiJCVEFCTEUifQ==)
 
 ## Requirements
 
@@ -12,7 +12,6 @@ This code example demonstrates the implementation of Bluetooth&reg; LE extended 
 - Board support package (BSP) minimum required version for:
    - CYW920829M2EVK-02 : v2.0.0
    - CYW989829M2EVB-01 : v2.0.0
-   - CYW989829M2EVB-03 : v2.0.0
 - Programming language: C
 - Associated parts: [AIROC&trade; CYW20829 Bluetooth&reg; LE SoC](https://www.infineon.com/cms/en/product/promopages/airoc20829/)
 
@@ -26,7 +25,7 @@ This code example demonstrates the implementation of Bluetooth&reg; LE extended 
 ## Supported kits (make variable 'TARGET')
 
 - [AIROC&trade; CYW20829 Bluetooth® LE evaluation kit](https://www.infineon.com/CYW920829M2EVK-02) (`CYW920829M2EVK-02`) - Default value of `TARGET`
-- AIROC&trade; CYW89829 Bluetooth® LE evaluation kit (`CYW989829M2EVB-01`,`CYW989829M2EVB-03`)
+- AIROC&trade; CYW89829 Bluetooth® LE evaluation kit (`CYW989829M2EVB-01`)
 
 ## Hardware setup
 
@@ -267,6 +266,7 @@ Document title: *CE235038* – *Bluetooth&reg; LE Extended Advertisement Beacon*
 | 2.1.0   | Added support for CYW920829M2EVK-02 <br> Removed CYW920829M2EVB-01 from supported kits |
 | 2.2.0   | Update README to reflect minimum BSP support for CYW920829M2EVK-02 and add support for CYW989829M2EVB-01 |
 | 3.0.0   | Added support for CYW989829M2EVB-03, BSP and BTStack-integration major update for BT Firmware as a separate asset |
+| 4.0.0   | Removed support for CYW989829M2EVB-03 and updated btstack-integration with version 7.X |
 
 
 **Notes:**

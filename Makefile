@@ -149,6 +149,9 @@ PREBUILD=
 # Custom post-build commands to run.
 POSTBUILD=
 
+ifeq ($(TARGET), $(filter $(TARGET), APP_CYW920829M2EVK-02 APP_CYW989829M2EVB-01))
+DEFINES+=DEVICE_20829
+endif
 
 ################################################################################
 # Paths
